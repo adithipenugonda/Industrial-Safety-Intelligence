@@ -6,6 +6,8 @@ from app.models.zone import Zone
 from app.models.sensor import Sensor
 from app.models.worker import Worker
 from app.models.permit import Permit
+from app.models.maintenance import Maintenance
+from app.models.weather import Weather
 
 Base.metadata.create_all(bind=engine)
 

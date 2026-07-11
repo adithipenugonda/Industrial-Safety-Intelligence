@@ -41,3 +41,9 @@ class Zone(Base):
     back_populates="zone",
     cascade="all, delete"
 )
+    
+    maintenances = relationship(
+    "Maintenance",
+    back_populates="zone",
+    cascade="all, delete"
+)
