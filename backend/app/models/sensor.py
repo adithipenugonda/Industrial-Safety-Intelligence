@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -18,7 +19,7 @@ class Sensor(Base):
 
     unit = Column(String(20), nullable=False)
 
-    current_value = Column(Float, nullable=False)
+    # current_value = Column(Float, nullable=False)
 
     min_threshold = Column(Float, nullable=False)
 
@@ -40,4 +41,10 @@ class Sensor(Base):
     zone = relationship(
     "Zone",
     back_populates="sensors"
+)
+    
+    telemetry = relationship(
+    "Telemetry",
+    back_populates="sensor",
+    cascade="all, delete-orphan"
 )
