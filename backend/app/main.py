@@ -1,0 +1,45 @@
+from fastapi import FastAPI
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from fastapi import Depends
+
+
+from app.database import get_db
+from app.routes.zone_routes import router as zone_router
+from app.routes.sensor_routes import router as sensor_router
+from app.routes.worker_routes import router as worker_router
+from app.routes.permit_routes import router as permit_router
+
+app = FastAPI(
+    title="Industrial Safety Intelligence Platform",
+    version="1.0.0"
+)
+
+app.include_router(zone_router)
+app.include_router(sensor_router)
+app.include_router(worker_router)
+app.include_router(permit_router)
+
+
+@app.get("/")
+def home():
+    return {
+        "message": "Backend is Running 🚀"
+    }
+
+
+@app.get("/health")
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+
+        return {
+            "status": "success",
+            "database": "Connected Successfully ✅"
+        }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "error": str(e)
+        }
