@@ -12,11 +12,21 @@ from app.routes.permit_routes import router as permit_router
 from app.routes.maintenance_routes import router as maintenance_router
 from app.routes.weather_routes import router as weather_router
 from app.routes.telemetry_routes import router as telemetry_router
+from app.services.simulation_service import SimulationService
 
 app = FastAPI(
     title="Industrial Safety Intelligence Platform",
     version="1.0.0"
 )
+
+@app.on_event("startup")
+def startup():
+    SimulationService.start()
+
+
+@app.on_event("shutdown")
+def shutdown():
+    SimulationService.stop()
 
 app.include_router(zone_router)
 app.include_router(sensor_router)
