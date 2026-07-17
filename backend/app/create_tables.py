@@ -9,6 +9,7 @@ from app.models.permit import Permit
 from app.models.maintenance import Maintenance
 from app.models.weather import Weather
 from app.models.telemetry import Telemetry
+from app.models.snapshot import Snapshot
 
 Base.metadata.create_all(bind=engine)
 

@@ -12,6 +12,7 @@ from app.routes.permit_routes import router as permit_router
 from app.routes.maintenance_routes import router as maintenance_router
 from app.routes.weather_routes import router as weather_router
 from app.routes.telemetry_routes import router as telemetry_router
+from app.routes.snapshot_routes import router as snapshot_router
 from app.services.simulation_service import SimulationService
 
 app = FastAPI(
@@ -35,6 +36,7 @@ app.include_router(permit_router)
 app.include_router(maintenance_router)
 app.include_router(weather_router)
 app.include_router(telemetry_router)
+app.include_router(snapshot_router)
 
 @app.get("/")
 def home():
