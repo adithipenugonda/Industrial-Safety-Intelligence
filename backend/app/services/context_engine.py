@@ -203,6 +203,7 @@ class ContextEngineService:
                 .order_by(Telemetry.reading_time.desc())
                 .all()
             )
+
             latest_telemetry = telemetry_rows[0] if telemetry_rows else None
 
             telemetry_total = len(telemetry_rows)
@@ -221,19 +222,35 @@ class ContextEngineService:
                 if telemetry_total
                 else 0
             )
+
+            sensor_readings = {}
+
+            for sensor in sensors:
+                sensor_readings[sensor.sensor_type] = {
+                    "value": sensor.current_value,
+                    "unit": sensor.unit,
+                    "min_threshold": sensor.min_threshold,
+                    "max_threshold": sensor.max_threshold,
+                    "status": sensor.status
+                }
+
             telemetry_summary = {
-                "total_readings": telemetry_total,
-                "latest_value": (
-                    latest_telemetry.reading_value if latest_telemetry else None
-                ),
-                "latest_time": (
-                    latest_telemetry.reading_time.isoformat()
-                    if latest_telemetry and latest_telemetry.reading_time else None
-                ),
-                "average_value": round(float(telemetry_average), 2),
-                "max_value": round(float(telemetry_max), 2),
-                "min_value": round(float(telemetry_min), 2),
-                "sensor_count": len({item.sensor_id for item in telemetry_rows})
+                "sensor_readings": sensor_readings,
+                "statistics": {
+                    "total_readings": telemetry_total,
+                    "latest_value": (
+                        latest_telemetry.reading_value if latest_telemetry else None
+                    ),
+                    "latest_time": (
+                        latest_telemetry.reading_time.isoformat()
+                        if latest_telemetry and latest_telemetry.reading_time
+                        else None
+                    ),
+                    "average_value": round(float(telemetry_average), 2),
+                    "max_value": round(float(telemetry_max), 2),
+                    "min_value": round(float(telemetry_min), 2),
+                    "sensor_count": len({item.sensor_id for item in telemetry_rows})
+                }
             }
 
             telemetry_available = latest_telemetry is not None

@@ -9,6 +9,8 @@ class SensorRepository:
     @staticmethod
     def get_all(db: Session):
         return db.query(Sensor).all()
+    
+    
 
     @staticmethod
     def get_by_id(db: Session, sensor_id: int):
@@ -71,3 +73,5 @@ class SensorRepository:
         db.commit()
 
         return db_sensor
+    
+    
