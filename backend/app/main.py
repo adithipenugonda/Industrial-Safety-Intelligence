@@ -14,6 +14,10 @@ from app.routes.weather_routes import router as weather_router
 from app.routes.telemetry_routes import router as telemetry_router
 from app.routes.snapshot_routes import router as snapshot_router
 from app.services.simulation_service import SimulationService
+from app.routes.risk_routes import router as risk_router
+from app.routes.alert_routes import router as alert_router
+from app.routes.time_machine_routes import router as time_machine_router
+from app.routes.optimizer_routes import optimizer_router
 
 app = FastAPI(
     title="Industrial Safety Intelligence Platform",
@@ -37,6 +41,10 @@ app.include_router(maintenance_router)
 app.include_router(weather_router)
 app.include_router(telemetry_router)
 app.include_router(snapshot_router)
+app.include_router(risk_router)
+app.include_router(alert_router)
+app.include_router(time_machine_router)
+app.include_router(optimizer_router)
 
 @app.get("/")
 def home():
