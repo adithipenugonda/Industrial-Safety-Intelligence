@@ -8,7 +8,7 @@ class SensorBase(BaseModel):
     sensor_type: str
     zone_id: int
     unit: str
-    # current_value: float
+    current_value: float = 0.0
     min_threshold: float
     max_threshold: float
     status: str = "Active"

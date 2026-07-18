@@ -22,12 +22,16 @@ class SensorRepository:
 
     @staticmethod
     def create(db: Session, sensor: SensorCreate):
+        current_value = getattr(sensor, "current_value", None)
+        if current_value is None:
+            current_value = 0.0
+
         db_sensor = Sensor(
             sensor_name=sensor.sensor_name,
             sensor_type=sensor.sensor_type,
             zone_id=sensor.zone_id,
             unit=sensor.unit,
-            # current_value=sensor.current_value,
+            current_value=current_value,
             min_threshold=sensor.min_threshold,
             max_threshold=sensor.max_threshold,
             status=sensor.status

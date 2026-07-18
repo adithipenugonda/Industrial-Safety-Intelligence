@@ -19,7 +19,7 @@ class Sensor(Base):
 
     unit = Column(String(20), nullable=False)
 
-    # current_value = Column(Float, nullable=False)
+    current_value = Column(Float, nullable=False, default=0.0)
 
     min_threshold = Column(Float, nullable=False)
 
