@@ -90,7 +90,7 @@ export default function DigitalTwinBuilder() {
       </div>
 
       {/* Main Workspace Wrapper */}
-      <div className="pt-[110px] px-8 pb-8 h-full flex flex-col z-10 relative">
+      <div className="pt-[130px] px-8 pb-8 h-full flex flex-col z-10 relative">
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-wider text-white uppercase font-orbitron">

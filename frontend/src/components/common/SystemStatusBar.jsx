@@ -38,19 +38,19 @@ export default function SystemStatusBar() {
       className="w-full flex justify-between items-center"
     >
       {/* LEFT: Branding & Module Name */}
-      <div className="flex items-center gap-6">
-        <div className="p-1.5 rounded-lg bg-black/40 border border-white/5 shadow-lg backdrop-blur-md">
+      <div className="flex items-center gap-4 md:gap-6">
+        <div className="p-1.5 rounded-lg bg-black/40 border border-white/5 shadow-lg backdrop-blur-md shrink-0">
           <FiShield className="text-brand-cyan text-sm animate-pulse" />
         </div>
         <div className="flex flex-col justify-center">
-          <h1 className="text-xl font-bold tracking-[0.2em] uppercase text-white font-orbitron leading-none drop-shadow-md">
+          <h1 className="text-xs lg:text-sm font-bold tracking-[0.2em] uppercase text-white font-orbitron leading-none drop-shadow-md hidden sm:block max-w-[120px] lg:max-w-none truncate">
             {getModuleTitle(location.pathname)}
           </h1>
         </div>
       </div>
 
       {/* CENTER: Floating Icon Dock */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 glass-panel-deep px-3 py-2 border border-brand-cyan/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 md:gap-2 glass-panel-deep px-2 md:px-3 py-1.5 md:py-2 border border-brand-cyan/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-xl">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const isHovered = hoveredNav === item.path;
@@ -68,9 +68,9 @@ export default function SystemStatusBar() {
             >
               <motion.div 
                 layout
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-transparent transition-colors duration-300 ${isActive ? activeBg : inactiveBg}`}
+                className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-xl border border-transparent transition-colors duration-300 ${isActive ? activeBg : inactiveBg}`}
               >
-                <item.icon className="text-lg" />
+                <item.icon className="text-sm md:text-lg" />
                 <AnimatePresence mode="popLayout">
                   {showLabel && (
                     <motion.span
@@ -78,7 +78,7 @@ export default function SystemStatusBar() {
                       animate={{ opacity: 1, width: "auto", scale: 1 }}
                       exit={{ opacity: 0, width: 0, scale: 0.8 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="text-[10px] font-mono tracking-widest uppercase whitespace-nowrap overflow-hidden"
+                      className="text-[9px] font-mono tracking-widest uppercase whitespace-nowrap overflow-hidden hidden md:inline"
                     >
                       {item.label}
                     </motion.span>
@@ -91,17 +91,17 @@ export default function SystemStatusBar() {
       </div>
 
       {/* RIGHT: Time & Notifications */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 md:gap-4">
         {/* Time */}
-        <div className="flex items-center gap-2 glass-panel px-4 py-1.5 rounded-full border border-white/5">
+        <div className="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full border border-white/5 hidden md:flex">
           <FiClock className="text-slate-400" size={12} />
-          <span className="font-mono text-sm tracking-widest text-slate-200 font-bold">{currentTime}</span>
+          <span className="font-mono text-xs tracking-widest text-slate-200 font-bold">{currentTime}</span>
         </div>
 
         {/* Notifications */}
-        <div className="relative cursor-pointer group">
+        <div className="relative cursor-pointer group shrink-0">
           <div className="p-2 rounded-full glass-panel border border-white/5 group-hover:border-brand-cyan/40 group-hover:bg-brand-cyan/10 transition-all duration-300 shadow-md">
-            <FiBell className="text-slate-300 group-hover:text-brand-cyan" size={16} />
+            <FiBell className="text-slate-300 group-hover:text-brand-cyan" size={15} />
           </div>
           <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-status-danger shadow-[0_0_8px_rgba(239,68,68,0.6)] border border-black">
             <span className="text-[8px] font-bold text-white">3</span>
