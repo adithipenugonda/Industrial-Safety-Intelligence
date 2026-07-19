@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  /* COLOR PALETTE */
+  /* Backgrounds (Deep space/industrial darks) */
+  --color-factory-bg-deep: #03050C;
+  --color-factory-bg-base: #050816;
+  --color-factory-bg-elevated: #0B1120;
+  
+  /* Accents */
+  --color-brand-cyan: #22d3ee;
+  --color-brand-cyan-muted: rgba(34, 211, 238, 0.5);
+  --color-brand-blue: #3b82f6;
+
+  /* Status Colors */
+  --color-status-success: #10b981;
+  --color-status-warning: #f59e0b;
+  --color-status-danger: #ef4444;
+
+  /* Glassmorphism Variables */
+  --color-glass-base: rgba(255, 255, 255, 0.03);
+  --color-glass-deep: rgba(0, 0, 0, 0.4);
+  --color-glass-active: rgba(255, 255, 255, 0.07);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-glass-border-active: rgba(255, 255, 255, 0.3);
+
+  /* TYPOGRAPHY */
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-jetmono: "JetBrains Mono", monospace;
+
+  /* ANIMATION DURATIONS (Overriding defaults for crisp tech feel) */
+  --animate-duration-fast: 150ms;
+  --animate-duration-mid: 300ms;
+  --animate-duration-slow: 700ms;
+}
+
+@layer base {
+  body {
+    @apply bg-transparent text-slate-200 overflow-hidden font-inter;
+  }
+
+  /* Ensure our cinematic transitions and screens don't block the global background */
+  .bg-factory-bg-base {
+    background-color: transparent !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-orbitron tracking-wider;
+  }
+
+  code, pre {
+    @apply font-jetmono;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(34, 211, 238, 0.3);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.6);
+  }
+}
+
+@layer utilities {
+  /* GLASSMORPHISM PANELS (Premium Industrial) */
+  .glass-panel {
+    @apply bg-glass-base backdrop-blur-xl border border-glass-border rounded-lg shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.6)] transition-all duration-300;
+  }
+  
+  .glass-panel-deep {
+    @apply bg-glass-deep backdrop-blur-2xl border border-glass-border rounded-md shadow-inner shadow-black/80;
+  }
+  
+  .glass-panel-active {
+    @apply bg-glass-active backdrop-blur-xl border border-brand-cyan/40 rounded-lg shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_0_15px_rgba(34,211,238,0.15)];
+  }
+
+  /* NEON TEXT & SHADOWS (Subtle & Professional) */
+  .neon-text {
+    @apply text-brand-cyan drop-shadow-[0_0_5px_rgba(34,211,238,0.5)];
+  }
+  
+  .neon-text-danger {
+    @apply text-status-danger drop-shadow-[0_0_5px_rgba(239,68,68,0.5)];
+  }
+
+  .neon-border {
+    @apply border-brand-cyan/40 shadow-[0_0_8px_rgba(34,211,238,0.2)];
+  }
+  
+  .neon-border-danger {
+    @apply border-status-danger/40 shadow-[0_0_8px_rgba(239,68,68,0.2)];
+  }
+
+  /* INTERACTIVE / HOVER EFFECTS */
+  .hover-glow {
+    @apply hover:border-brand-cyan/50 hover:shadow-[0_0_15px_rgba(34,211,238,0.25)] transition-all duration-300 cursor-pointer;
+  }
+  
+  .hover-scale {
+    @apply hover:scale-[1.01] transition-transform duration-300;
+  }
+}

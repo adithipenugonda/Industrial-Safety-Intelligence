@@ -1,0 +1,37 @@
+:root{
+
+/* Background */
+
+--bg-primary:#050816;
+--bg-secondary:#0B1120;
+--bg-card:rgba(20,30,48,.70);
+
+/* Accent */
+
+--cyan:#00E5FF;
+--blue:#2563EB;
+--green:#22C55E;
+--yellow:#FACC15;
+--orange:#FB923C;
+--red:#EF4444;
+
+/* Text */
+
+--text-primary:#FFFFFF;
+--text-secondary:#CBD5E1;
+
+/* Radius */
+
+--radius:18px;
+
+/* Glow */
+
+--glow-cyan:0 0 15px rgba(0,229,255,.5);
+--glow-red:0 0 15px rgba(239,68,68,.5);
+--glow-green:0 0 15px rgba(34,197,94,.5);
+
+/* Transition */
+
+--transition:.3s ease;
+
+}
