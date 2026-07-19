@@ -110,3 +110,12 @@
     @apply hover:scale-[1.01] transition-transform duration-300;
   }
 }
+
+@keyframes scan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 200%;
+  }
+}

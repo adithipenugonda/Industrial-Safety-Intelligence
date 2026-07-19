@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
   { path: '/mission-control', label: 'Mission Control', icon: FiGrid },
-  { path: '/builder', label: 'Twin Builder', icon: FiTool },
+  { path: '/builder', label: 'Factory Configuration', icon: FiTool },
   { path: '/telemetry', label: 'Telemetry', icon: FiActivity },
   { path: '/weather', label: 'Environment', icon: FiCloudRain },
   { path: '/analytics', label: 'Analytics', icon: FiPieChart },
@@ -20,7 +20,7 @@ export default function SystemStatusBar() {
   const getModuleTitle = (path) => {
     switch (path) {
       case '/mission-control': return 'COMMAND CENTER';
-      case '/builder': return 'DIGITAL TWIN BUILDER';
+      case '/builder': return 'FACTORY CONFIGURATION';
       case '/telemetry': return 'TELEMETRY OPERATIONS';
       case '/weather': return 'ENVIRONMENTAL INTELLIGENCE';
       case '/analytics': return 'OPERATIONAL INTELLIGENCE';

@@ -105,6 +105,11 @@ Do NOT use ```json.
 Do NOT write anything except the JSON.
 """
 
+        if not model:
+            return {
+                "error": "Gemini model is unavailable. Please install google-generativeai and configure GEMINI_API_KEY."
+            }
+
         # -----------------------------
         # Call Gemini
         # -----------------------------
