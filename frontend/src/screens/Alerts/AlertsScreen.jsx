@@ -83,44 +83,53 @@ export default function AlertsScreen() {
   const activeIncident = alerts.find(a => a.id === activeIncidentId) || alerts[0];
 
   return (
-    <CinematicTransition className="w-screen h-screen overflow-hidden relative text-slate-200">
+    <CinematicTransition className="w-screen h-screen overflow-hidden relative text-slate-200 bg-factory-bg-base flex flex-col">
       <SVGConnectionLayer />
       
       {/* Top Bar: System Status */}
       <div className="absolute top-0 left-0 z-50 w-full pointer-events-none p-4">
         <div className="pointer-events-auto w-full">
-          <SystemStatusBar />
+          <SystemStatusBar 
+            extraRight={
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-status-danger/10 border border-status-danger/40 backdrop-blur-md">
+                <span className="text-status-danger text-[10px] font-mono font-bold tracking-widest uppercase animate-pulse">
+                  EMERGENCY OPERATIONS ACTIVE
+                </span>
+              </div>
+            }
+          />
         </div>
       </div>
 
-      <div className="pt-[140px] px-8 pb-6 h-full flex flex-col z-10 relative pointer-events-auto w-full mx-auto max-w-[1600px]">
+      <div className="pt-20 px-6 pb-4 h-full flex flex-col z-10 relative pointer-events-auto w-full mx-auto max-w-[1800px] min-h-0">
         
-        {/* Header (Removed redundant title to prevent overlap with global header) */}
-        <div className="mb-4 flex justify-end shrink-0">
-          <div>
-            <p className="text-status-danger text-sm font-mono tracking-widest mt-1">EMERGENCY OPERATIONS & RESPONSE</p>
-          </div>
+        {/* Page Header Bar */}
+        <div className="mb-3 flex items-center gap-2.5 shrink-0">
+          <span className="w-2 h-2 rounded-full bg-status-danger animate-ping"></span>
+          <h1 className="text-base font-bold tracking-wider text-white uppercase font-orbitron">
+            Alert Command Center
+          </h1>
         </div>
 
         {/* 5-Zone Grid Layout */}
-        <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
+        <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
           
           {/* LEFT COLUMN (Zones 1, 2, 5) */}
-          <div className="col-span-8 flex flex-col gap-6 min-h-0">
+          <div className="col-span-8 flex flex-col gap-4 min-h-0">
             {/* Zone 1: Hero Active Incident */}
-            <div className="shrink-0">
+            <div className="h-[46%] min-h-0">
               <HeroIncident incident={activeIncident} />
             </div>
             
             {/* Split Bottom Left into Timeline and Registry */}
-            <div className="flex-1 grid grid-cols-2 gap-6 min-h-0">
+            <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
               {/* Zone 2: Incident Timeline */}
-              <div className="min-h-0">
+              <div className="h-full min-h-0">
                 <IncidentTimeline incident={activeIncident} />
               </div>
               
               {/* Zone 5: Historical Alert Registry */}
-              <div className="min-h-0">
+              <div className="h-full min-h-0">
                 <AlertRegistry 
                   alerts={alerts} 
                   activeIncidentId={activeIncidentId} 
@@ -131,9 +140,9 @@ export default function AlertsScreen() {
           </div>
 
           {/* RIGHT COLUMN (Zones 3, 4) */}
-          <div className="col-span-4 flex flex-col gap-6 min-h-0">
+          <div className="col-span-4 flex flex-col gap-4 min-h-0">
             {/* Zone 3: Incident Map */}
-            <div className="h-[40%] min-h-[300px]">
+            <div className="h-[44%] min-h-0">
               <IncidentMap incident={activeIncident} />
             </div>
 

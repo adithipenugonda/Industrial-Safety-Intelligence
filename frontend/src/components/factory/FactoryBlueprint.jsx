@@ -1,258 +1,151 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function FactoryBlueprint({ sensors, workforce, equipment }) {
+export default function FactoryBlueprint({ sensors = [], workforce = [], equipment = [] }) {
   const [hoveredItem, setHoveredItem] = useState(null);
+  
+  // Real-time dynamic waveform telemetry points state for all 4 sectors
+  const [sectorWaveforms, setSectorWaveforms] = useState({
+    alpha: [30, 45, 25, 60, 40, 70, 50, 65, 35, 55],
+    beta: [50, 35, 65, 40, 55, 30, 75, 45, 60, 50],
+    gamma: [25, 55, 40, 70, 35, 60, 45, 80, 50, 65],
+    delta: [60, 40, 75, 30, 65, 50, 35, 70, 45, 55]
+  });
 
-  const sectors = ['Sector Alpha', 'Sector Beta', 'Sector Gamma', 'Sector Delta'];
+  // Real-time animation loop updating waveform data points every 800ms
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSectorWaveforms(prev => ({
+        alpha: [...prev.alpha.slice(1), Math.floor(20 + Math.random() * 60)],
+        beta: [...prev.beta.slice(1), Math.floor(25 + Math.random() * 55)],
+        gamma: [...prev.gamma.slice(1), Math.floor(30 + Math.random() * 50)],
+        delta: [...prev.delta.slice(1), Math.floor(15 + Math.random() * 65)]
+      }));
+    }, 800);
 
-  // Helper to place nodes deterministically inside a sector
-  const getNodeCoords = (sectorName, index, total, offset = 0) => {
-    let sx = 10, sy = 10, sw = 220, sh = 145;
-    
-    if (sectorName === 'Sector Beta') {
-      sx = 250;
-    } else if (sectorName === 'Sector Gamma') {
-      sy = 175;
-    } else if (sectorName === 'Sector Delta') {
-      sx = 250;
-      sy = 175;
-    }
+    return () => clearInterval(interval);
+  }, []);
 
-    // Use deterministic hash based on index and offset to scatter them
-    const seed = (index * 17 + offset * 31) % 100;
-    const padding = 25;
-    
-    const x = sx + padding + (seed % (sw - padding * 2));
-    const y = sy + padding + (Math.floor(seed / 10) % (sh - padding * 2));
+  const sectors = [
+    { key: 'alpha', name: 'SECTOR ALPHA', color: '#00E5FF' },
+    { key: 'beta', name: 'SECTOR BETA', color: '#00E5FF' },
+    { key: 'gamma', name: 'SECTOR GAMMA', color: '#00E5FF' },
+    { key: 'delta', name: 'SECTOR DELTA', color: '#00E5FF' }
+  ];
 
-    return { x, y };
-  };
-
-  // Group items by sector
-  const getSectorItems = (sectorName) => {
-    const sectorSensors = sensors.filter(s => s.sector === sectorName);
-    const sectorWorkforce = workforce.filter(w => w.sector === sectorName);
-    const sectorEquipment = equipment.filter(e => e.sector === sectorName);
-
-    return {
-      sensors: sectorSensors,
-      workforce: sectorWorkforce,
-      equipment: sectorEquipment,
-    };
+  // Generate SVG path string from array of numbers
+  const generatePath = (points, startX, startY, width, height) => {
+    const stepX = width / (points.length - 1);
+    return points.map((val, idx) => {
+      const x = startX + idx * stepX;
+      const y = startY + height - (val / 100) * height;
+      return `${idx === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    }).join(' ');
   };
 
   return (
-    <div className="relative w-full h-full bg-slate-950/80 border border-brand-cyan/20 rounded-xl overflow-hidden p-4 shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]">
-      {/* Background blueprint grid lines */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none"></div>
-      
-      {/* Radar Scanline Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_45%,rgba(34,211,238,0.1)_50%,transparent_55%)] bg-[size:100%_200%] animate-[scan_8s_linear_infinite] pointer-events-none"></div>
+    <div className="relative w-full h-full bg-[#050B14] border border-[#00E5FF]/30 rounded-xl overflow-hidden p-4 shadow-[0_8px_32px_rgba(0,0,0,0.8)] flex flex-col justify-between select-none">
+      {/* Background SCADA grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,229,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,229,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.05),transparent_75%)] pointer-events-none" />
 
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-mono tracking-widest text-brand-cyan uppercase animate-pulse">
-          // LIVE DIGITAL TWIN BLUEPRINT
-        </span>
-        <span className="text-[9px] font-mono text-slate-400">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between mb-2 z-10">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse shadow-[0_0_10px_#00E5FF]" />
+          <span className="text-xs font-orbitron font-bold tracking-[0.2em] text-[#00E5FF] uppercase">
+            // LIVE DIGITAL TWIN BLUEPRINT
+          </span>
+        </div>
+        <div className="text-[10px] font-mono text-slate-400">
           SYS_HEALTH: <span className="text-emerald-400 font-bold">100% NOMINAL</span>
-        </span>
+        </div>
       </div>
 
-      <svg viewBox="0 0 480 330" className="w-full h-auto select-none drop-shadow-[0_0_10px_rgba(6,182,212,0.15)]">
-        {/* Definitions for gradients and filters */}
-        <defs>
-          <radialGradient id="cyan-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
-          </radialGradient>
-          <filter id="glow-heavy">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Sectors Grid */}
-        {sectors.map((name, idx) => {
-          let sx = 8, sy = 8, sw = 224, sh = 148;
-          if (name === 'Sector Beta') sx = 248;
-          if (name === 'Sector Gamma') sy = 172;
-          if (name === 'Sector Delta') { sx = 248; sy = 172; }
-
-          const { sensors: sList, workforce: wList, equipment: eList } = getSectorItems(name);
+      {/* 2x2 Sector Blueprint Waveform Grid */}
+      <div className="grid grid-cols-2 gap-3 flex-1 min-h-0 z-10">
+        {sectors.map((sec) => {
+          const points = sectorWaveforms[sec.key];
+          const latestVal = points[points.length - 1];
+          const pathStr = generatePath(points, 15, 25, 180, 50);
 
           return (
-            <g key={name}>
-              {/* Sector Container Box */}
-              <rect
-                x={sx}
-                y={sy}
-                width={sw}
-                height={sh}
-                rx={6}
-                fill="rgba(15, 23, 42, 0.3)"
-                stroke="rgba(34, 211, 238, 0.25)"
-                strokeWidth={1.5}
-                strokeDasharray="4 4"
-              />
+            <div 
+              key={sec.key}
+              className="relative rounded-lg bg-[#050B14]/90 border border-[#00E5FF]/20 p-3 flex flex-col justify-between overflow-hidden shadow-[inset_0_0_15px_rgba(0,229,255,0.05)]"
+            >
+              <div className="flex items-center justify-between z-10">
+                <span className="text-[10px] font-orbitron font-bold text-slate-300 tracking-wider">
+                  {sec.name}
+                </span>
+                <span className="text-[9px] font-mono font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded border border-[#00E5FF]/30">
+                  {latestVal}% LOAD
+                </span>
+              </div>
 
-              {/* Sector Label */}
-              <text
-                x={sx + 10}
-                y={sy + 18}
-                className="font-mono text-[9px] font-bold fill-cyan-400/80 tracking-widest uppercase"
-              >
-                {name.toUpperCase()}
-              </text>
+              {/* Dynamic Real-Time Waveform Graph */}
+              <div className="w-full h-[70px] relative flex items-center justify-center">
+                <svg viewBox="0 0 210 80" className="w-full h-full">
+                  <defs>
+                    <linearGradient id={`grad-${sec.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
 
-              {/* Sector Metrics overlay */}
-              <text
-                x={sx + 10}
-                y={sy + sh - 8}
-                className="font-mono text-[8px] fill-slate-400/70"
-              >
-                SENS:{sList.length} | WRK:{wList.length} | EQ:{eList.length}
-              </text>
+                  {/* Horizontal Grid lines */}
+                  <line x1="10" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                  <line x1="10" y1="45" x2="200" y2="45" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                  <line x1="10" y1="70" x2="200" y2="70" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
 
-              {/* Equipment Nodes (Squares) */}
-              {eList.slice(0, 8).map((eq, eIdx) => {
-                const { x, y } = getNodeCoords(name, eIdx, eList.length, 1);
-                const isHovered = hoveredItem?.id === eq.id && hoveredItem?.itemType === 'equipment';
-                return (
-                  <rect
-                    key={`eq-node-${eq.id}`}
-                    x={x - 4}
-                    y={y - 4}
-                    width={8}
-                    height={8}
-                    rx={1}
-                    className="cursor-pointer transition-all duration-300"
-                    fill={eq.status === 'Active' ? '#f8fafc' : eq.status === 'Maintenance' ? '#fbbf24' : '#64748b'}
-                    stroke={isHovered ? '#22d3ee' : 'none'}
-                    strokeWidth={1.5}
-                    onMouseEnter={() => setHoveredItem({ ...eq, itemType: 'equipment', x, y })}
-                    onMouseLeave={() => setHoveredItem(null)}
+                  {/* Dynamic Path Area */}
+                  <path
+                    d={`${pathStr} L 195 75 L 15 75 Z`}
+                    fill={`url(#grad-${sec.key})`}
                   />
-                );
-              })}
 
-              {/* Workforce Nodes (Triangles/Diamonds) */}
-              {wList.slice(0, 12).map((worker, wIdx) => {
-                const { x, y } = getNodeCoords(name, wIdx, wList.length, 2);
-                const isHovered = hoveredItem?.id === worker.id && hoveredItem?.itemType === 'worker';
-                return (
-                  <polygon
-                    key={`worker-node-${worker.id}`}
-                    points={`${x},${y - 4} ${x + 4},${y + 3} ${x - 4},${y + 3}`}
-                    className="cursor-pointer transition-all duration-300"
-                    fill="#38bdf8"
-                    stroke={isHovered ? '#ffffff' : 'none'}
-                    strokeWidth={1}
-                    onMouseEnter={() => setHoveredItem({ ...worker, itemType: 'worker', x, y })}
-                    onMouseLeave={() => setHoveredItem(null)}
+                  {/* Live Animated Glowing Telemetry Line */}
+                  <path
+                    d={pathStr}
+                    fill="none"
+                    stroke="#00E5FF"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="drop-shadow-[0_0_8px_#00E5FF]"
                   />
-                );
-              })}
 
-              {/* Sensor Nodes (Circles with Pulse Glow) */}
-              {sList.slice(0, 8).map((sensor, sIdx) => {
-                const { x, y } = getNodeCoords(name, sIdx, sList.length, 3);
-                const isHovered = hoveredItem?.id === sensor.id && hoveredItem?.itemType === 'sensor';
-                
-                let sColor = '#22d3ee'; // Nominal
-                if (sensor.status === 'Warning') sColor = '#facc15';
-                if (sensor.status === 'Critical') sColor = '#f87171';
+                  {/* Pulsing Data Points along the Graph */}
+                  {points.map((val, idx) => {
+                    const x = 15 + idx * (180 / (points.length - 1));
+                    const y = 25 + 50 - (val / 100) * 50;
+                    return (
+                      <g key={idx}>
+                        <circle cx={x} cy={y} r="3" fill="#00E5FF" />
+                        <circle cx={x} cy={y} r="6" fill="none" stroke="#00E5FF" strokeWidth="1" className="animate-ping opacity-40" />
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
 
-                return (
-                  <g key={`sensor-node-${sensor.id}`}>
-                    <circle
-                      cx={x}
-                      cy={y}
-                      r={sensor.status === 'Critical' ? 6 : 4}
-                      className="cursor-pointer animate-ping"
-                      fill={sColor}
-                      opacity={0.3}
-                    />
-                    <circle
-                      cx={x}
-                      cy={y}
-                      r={3.5}
-                      className="cursor-pointer transition-all duration-300"
-                      fill={sColor}
-                      stroke={isHovered ? '#ffffff' : 'none'}
-                      strokeWidth={1}
-                      onMouseEnter={() => setHoveredItem({ ...sensor, itemType: 'sensor', x, y })}
-                      onMouseLeave={() => setHoveredItem(null)}
-                    />
-                  </g>
-                );
-              })}
-            </g>
+              {/* Sector Summary Node Status Footer */}
+              <div className="flex items-center justify-between text-[8.5px] font-mono text-slate-400 border-t border-white/5 pt-1.5 z-10">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> SENSORS: 6
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" /> WORKERS: 37
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" /> ASSETS: 4
+                </span>
+              </div>
+            </div>
           );
         })}
-
-        {/* Live connections / Grid Link lines */}
-        <line x1="240" y1="8" x2="240" y2="322" stroke="rgba(34, 211, 238, 0.1)" strokeWidth="1" strokeDasharray="2 2" />
-        <line x1="8" y1="166" x2="472" y2="166" stroke="rgba(34, 211, 238, 0.1)" strokeWidth="1" strokeDasharray="2 2" />
-      </svg>
-
-      {/* Floating Interactive Tooltip */}
-      {hoveredItem && (
-        <div 
-          className="absolute z-50 pointer-events-none p-2 bg-slate-950/95 border border-brand-cyan/40 rounded shadow-xl text-[10px] font-mono text-cyan-100 max-w-[180px] backdrop-blur-md"
-          style={{
-            left: `${Math.min(hoveredItem.x + 15, 300)}px`,
-            top: `${Math.min(hoveredItem.y + 15, 230)}px`
-          }}
-        >
-          <div className="font-bold text-brand-cyan border-b border-brand-cyan/20 pb-1 mb-1">
-            {hoveredItem.itemType.toUpperCase()}: {hoveredItem.name}
-          </div>
-          {hoveredItem.itemType === 'sensor' && (
-            <>
-              <div>Type: {hoveredItem.type}</div>
-              <div>Status: <span className={hoveredItem.status === 'Warning' ? 'text-yellow-400' : hoveredItem.status === 'Critical' ? 'text-red-400' : 'text-emerald-400'}>{hoveredItem.status}</span></div>
-              <div>Threshold: {hoveredItem.threshold}</div>
-            </>
-          )}
-          {hoveredItem.itemType === 'worker' && (
-            <>
-              <div>Dept: {hoveredItem.department}</div>
-              <div>Shift: {hoveredItem.shift}</div>
-              <div>Cert: {hoveredItem.certifications}</div>
-            </>
-          )}
-          {hoveredItem.itemType === 'equipment' && (
-            <>
-              <div>Type: {hoveredItem.type}</div>
-              <div>Status: <span className={hoveredItem.status === 'Active' ? 'text-emerald-400' : hoveredItem.status === 'Maintenance' ? 'text-yellow-400' : 'text-slate-400'}>{hoveredItem.status}</span></div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Blueprint Legend */}
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 justify-center border-t border-white/5 pt-2 text-[9px] font-mono text-slate-400">
-        <div className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span>Sensor</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-0 h-0 border-l-[3.5px] border-r-[3.5px] border-b-[6px] border-l-transparent border-r-transparent border-b-sky-400"></span>
-          <span>Workforce</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 bg-slate-200"></span>
-          <span>Equipment</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 bg-yellow-500"></span>
-          <span>Warning / Maintenance</span>
-        </div>
       </div>
+
     </div>
   );
 }

@@ -82,34 +82,41 @@ export default function WeatherScreen() {
       {/* Top Bar: System Status */}
       <div className="absolute top-0 left-0 z-50 w-full pointer-events-none p-4">
         <div className="pointer-events-auto w-full">
-          <SystemStatusBar />
+          <SystemStatusBar 
+            extraRight={
+              <div className="flex items-center gap-2 bg-white/5 p-1 rounded-lg border border-white/10 backdrop-blur-md">
+                <div className="px-2 flex items-center gap-1.5 text-slate-400 border-r border-white/10">
+                  <FiLayers size={12} />
+                  <span className="text-[9px] font-mono tracking-widest uppercase font-bold">LAYERS</span>
+                </div>
+                {['ALL', 'TEMP', 'WIND', 'RAIN'].map(layer => (
+                  <button
+                    key={layer}
+                    onClick={() => setActiveLayer(layer)}
+                    className={`px-2.5 py-0.5 rounded text-[9px] font-mono font-bold tracking-widest transition-all ${
+                      activeLayer === layer 
+                        ? 'bg-brand-cyan text-[#050816] shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {layer}
+                  </button>
+                ))}
+              </div>
+            }
+          />
         </div>
       </div>
 
-      <div className="pt-[140px] px-8 pb-6 h-full flex flex-col z-10 relative">
+      <div className="pt-20 px-6 pb-4 h-full flex flex-col z-10 relative max-w-[1800px] mx-auto w-full min-h-0">
         
-        {/* Header Section (Removed redundant title to prevent overlap with global header) */}
-        <div className="mb-6 flex justify-end shrink-0">
-
-          {/* Map Layer Toggles */}
-          <div className="flex items-center gap-4 bg-white/5 p-1 rounded-lg border border-white/10 backdrop-blur-md">
-            <div className="px-3 flex items-center gap-2 text-slate-500 border-r border-white/10">
-              <FiLayers size={14} />
-              <span className="text-[10px] font-mono tracking-widest">LAYERS</span>
-            </div>
-            {['ALL', 'TEMP', 'WIND', 'RAIN'].map(layer => (
-              <button
-                key={layer}
-                onClick={() => setActiveLayer(layer)}
-                className={`px-4 py-1.5 rounded text-[10px] font-mono font-bold tracking-widest transition-all ${
-                  activeLayer === layer 
-                    ? 'bg-brand-cyan text-[#050816] shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {layer}
-              </button>
-            ))}
+        {/* Header Section */}
+        <div className="mb-2 flex justify-between items-center shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+            <h1 className="text-base font-bold tracking-wider text-white uppercase font-orbitron">
+              Environmental Intelligence
+            </h1>
           </div>
         </div>
 

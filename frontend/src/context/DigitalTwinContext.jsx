@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 
 const DigitalTwinContext = createContext(null);
 
@@ -72,6 +72,58 @@ export const DigitalTwinProvider = ({ children }) => {
   const [equipment, setEquipment] = useState(initialEquipment);
   const [safetyPolicies, setSafetyPolicies] = useState(initialSafetyPolicies);
 
+  const [wsConnected, setWsConnected] = useState(false);
+
+  // REAL-TIME SCADA WEBSOCKET AUTO-CONNECT ENGINE WITH FALLBACK
+  useEffect(() => {
+    let ws;
+    try {
+      ws = new WebSocket('ws://localhost:8000/ws/telemetry');
+
+      ws.onopen = () => {
+        console.log('⚡ Connected to FastAPI SCADA Real-Time WebSocket Server!');
+        setWsConnected(true);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data && data.sensors) {
+            // Update sensor telemetry state with backend stream
+            setSensors(prev => {
+              const updated = [...prev];
+              data.sensors.forEach((streamed, idx) => {
+                if (updated[idx]) {
+                  updated[idx] = {
+                    ...updated[idx],
+                    status: streamed.status === 'CRITICAL' ? 'Warning' : 'Nominal',
+                  };
+                }
+              });
+              return updated;
+            });
+          }
+        } catch (err) {
+          // ignore parse errors
+        }
+      };
+
+      ws.onerror = () => {
+        setWsConnected(false);
+      };
+
+      ws.onclose = () => {
+        setWsConnected(false);
+      };
+    } catch (e) {
+      setWsConnected(false);
+    }
+
+    return () => {
+      if (ws) ws.close();
+    };
+  }, []);
+
   const [safetyConfig, setSafetyConfig] = useState({
     gasThreshold: 50,
     tempThreshold: 80,
@@ -111,6 +163,7 @@ export const DigitalTwinProvider = ({ children }) => {
         setSafetyConfig,
         aiConfig,
         setAiConfig,
+        wsConnected,
       }}
     >
       {children}

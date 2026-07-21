@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { TypeAnimation } from 'react-type-animation';
-import { FiCpu, FiChevronDown, FiChevronUp, FiAlertOctagon, FiCheckCircle, FiSearch, FiShield } from "react-icons/fi";
+import { FiCpu, FiChevronDown, FiChevronUp, FiCheckCircle, FiPlay, FiSearch, FiShield } from "react-icons/fi";
 
 export default function AIAdvisorFeed({ 
   customSequence = null,
@@ -9,17 +9,18 @@ export default function AIAdvisorFeed({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTyping, setIsTyping] = useState(true);
+  const [executedIndex, setExecutedIndex] = useState(null);
 
   const defaultSequence = [
     'Anomaly detected in Reactor Core 2.',
     500,
-    'Anomaly detected in Reactor Core 2. The cooling manifold pressure has dropped by 4.2% over the last 15 minutes, deviating from expected parameters. Immediate intervention is highly recommended to prevent thermal runaway.',
+    'Cooling manifold pressure dropped by 4.2%. Micro-fracture in valve casing probable due to vibration. Recommended intervention generated.',
   ];
 
   const analysis = customAnalysis || {
     priority: "CRITICAL",
     riskReduction: "94%",
-    rootCause: "Micro-fracture detected in tertiary coolant line valve casing. Probable cause: prolonged vibration exposure from adjacent heavy machinery.",
+    rootCause: "Micro-fracture in tertiary coolant line valve casing due to vibration exposure.",
     actions: [
       "Initiate remote bypass of Valve 42.",
       "Reroute 15% coolant flow through secondary manifold.",
@@ -27,48 +28,44 @@ export default function AIAdvisorFeed({
     ]
   };
 
-  // Simulate thinking then typing
   useEffect(() => {
     setIsTyping(true);
     const timer = setTimeout(() => {
       setIsTyping(false);
-    }, 6000); // Wait for the typing animation to finish
+    }, 4000);
     return () => clearTimeout(timer);
   }, [customSequence]);
 
+  const handleRunAction = (index) => {
+    setExecutedIndex(index);
+    setTimeout(() => setExecutedIndex(null), 3000);
+  };
+
   return (
-    <div className="glass-panel p-5 flex flex-col w-full text-slate-200 pointer-events-auto">
+    <div className="glass-panel p-4 flex flex-col w-full text-slate-200 pointer-events-auto rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] select-none font-mono">
       
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 border-b border-brand-cyan/20 pb-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-brand-cyan/10 rounded border border-brand-cyan/30 flex items-center justify-center">
-            <FiCpu className="text-brand-cyan text-lg animate-pulse" />
+      {/* Clean Minimal Header */}
+      <div className="flex items-center justify-between mb-2.5 border-b border-white/10 pb-2">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-[#00E5FF]/10 rounded border border-[#00E5FF]/30 text-[#00E5FF]">
+            <FiCpu size={14} className="animate-pulse" />
           </div>
           <div>
-            <h3 className="text-brand-cyan font-bold tracking-widest uppercase font-orbitron text-sm">AI Advisor</h3>
-            <span className="text-[10px] text-slate-400 font-mono tracking-wider">MODEL: GPT-FACTORY-4</span>
+            <h3 className="text-[#00E5FF] font-bold tracking-widest uppercase font-orbitron text-xs">Gemini AI Advisor</h3>
+            <span className="text-[9.5px] text-emerald-400 font-bold">Analysis Complete</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          {isTyping ? (
-            <div className="flex gap-1 items-center bg-white/5 px-2 py-1 rounded-full border border-white/10">
-              <span className="w-1.5 h-1.5 bg-brand-cyan rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-1.5 h-1.5 bg-brand-cyan rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-1.5 h-1.5 bg-brand-cyan rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-            </div>
-          ) : (
-            <span className="text-[10px] text-status-success font-mono tracking-wider bg-status-success/10 px-2 py-1 rounded-full border border-status-success/30">
-              ANALYSIS COMPLETE
-            </span>
-          )}
+
+        <div className="text-right">
+          <span className="text-[9px] text-slate-400 block">Based on Risk Score 82%</span>
+          <span className="text-[10px] text-cyan-300 font-bold">Confidence 98%</span>
         </div>
       </div>
 
-      {/* Main Message Body */}
-      <div className="font-mono text-sm leading-relaxed mb-4 min-h-[80px]">
+      {/* Main Message Typing Animation */}
+      <div className="text-[11px] leading-relaxed mb-2 min-h-[44px]">
         <TypeAnimation
-          key={customSequence ? customSequence[0] : 'default'} // Force re-render on sequence change
+          key={customSequence ? customSequence[0] : 'default'}
           sequence={customSequence || defaultSequence}
           wrapper="p"
           cursor={true}
@@ -77,13 +74,13 @@ export default function AIAdvisorFeed({
         />
       </div>
 
-      {/* Expandable Details */}
-      <div className="bg-factory-bg-base/50 rounded border border-white/5 overflow-hidden">
+      {/* Expandable Details Accordion */}
+      <div className="bg-black/30 rounded border border-white/5 overflow-hidden">
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400 hover:text-brand-cyan hover:bg-white/5 transition-colors"
+          className="w-full px-3 py-1.5 flex items-center justify-between text-[10px] text-slate-400 hover:text-[#00E5FF] transition-colors cursor-pointer"
         >
-          <span className="tracking-widest uppercase">View Detailed Analysis</span>
+          <span className="tracking-widest uppercase font-semibold">View Detailed Analysis</span>
           {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
         </button>
 
@@ -93,39 +90,38 @@ export default function AIAdvisorFeed({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="px-4 pb-4 flex flex-col gap-3"
+              className="px-3 pb-3 flex flex-col gap-2.5 text-xs"
             >
-              
-              {/* Badges Row */}
-              <div className="flex items-center gap-2 pt-2">
-                <div className={`flex items-center gap-1.5 px-2 py-1 ${analysis.priority === 'CRITICAL' ? 'bg-status-danger/10 border-status-danger/30 text-status-danger' : 'bg-status-warning/10 border-status-warning/30 text-status-warning'} border rounded text-[10px] font-bold tracking-wider`}>
-                  <FiAlertOctagon /> PRIORITY: {analysis.priority}
-                </div>
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded text-[10px] font-bold text-brand-cyan tracking-wider">
-                  <FiShield /> RISK REDUCTION: {analysis.riskReduction}
-                </div>
-              </div>
-
               {/* Root Cause */}
-              <div className="bg-white/5 p-3 rounded border-l-2 border-status-warning mt-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <FiSearch className="text-status-warning" size={14} />
-                  <h4 className="text-xs text-status-warning font-bold font-mono uppercase tracking-wider">Root Cause</h4>
+              <div className="p-2.5 rounded bg-white/5 border-l-2 border-amber-400 space-y-1">
+                <div className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <FiSearch size={12} /> Root Cause
                 </div>
-                <p className="text-xs text-slate-400 font-mono">{analysis.rootCause}</p>
+                <p className="text-[11px] text-slate-300">{analysis.rootCause}</p>
               </div>
 
-              {/* Recommendations */}
-              <div className="bg-white/5 p-3 rounded border-l-2 border-status-success">
-                <div className="flex items-center gap-2 mb-2">
-                  <FiCheckCircle className="text-status-success" size={14} />
-                  <h4 className="text-xs text-status-success font-bold font-mono uppercase tracking-wider">Recommended Actions</h4>
+              {/* Recommended Actions */}
+              <div className="p-2.5 rounded bg-white/5 border-l-2 border-emerald-400 space-y-2">
+                <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <FiCheckCircle size={12} /> Recommended Action
                 </div>
-                <ul className="text-xs text-slate-400 font-mono flex flex-col gap-1 list-disc pl-4">
+                <div className="space-y-1.5">
                   {analysis.actions.map((act, i) => (
-                    <li key={i}>{act}</li>
+                    <div key={i} className="flex items-center justify-between gap-2 p-1.5 rounded bg-black/40 border border-white/5 text-[10.5px]">
+                      <span className="truncate">{act}</span>
+                      <button
+                        onClick={() => handleRunAction(i)}
+                        className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                          executedIndex === i
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'bg-[#00E5FF]/20 text-[#00E5FF] hover:bg-[#00E5FF] hover:text-slate-950'
+                        }`}
+                      >
+                        {executedIndex === i ? 'Executed' : 'Run'}
+                      </button>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
             </motion.div>

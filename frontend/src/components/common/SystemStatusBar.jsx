@@ -12,23 +12,12 @@ const navItems = [
   { path: '/alerts', label: 'Alerts', icon: FiAlertTriangle, isAlert: true }
 ];
 
-export default function SystemStatusBar() {
+export default function SystemStatusBar({ extraRight }) {
   const currentTime = new Date().toLocaleTimeString("en-US", { hour12: false, hour: '2-digit', minute: '2-digit' });
   const location = useLocation();
   const [hoveredNav, setHoveredNav] = useState(null);
 
-  const getModuleTitle = (path) => {
-    switch (path) {
-      case '/mission-control': return 'COMMAND CENTER';
-      case '/builder': return 'FACTORY CONFIGURATION';
-      case '/telemetry': return 'TELEMETRY OPERATIONS';
-      case '/weather': return 'ENVIRONMENTAL INTELLIGENCE';
-      case '/analytics': return 'OPERATIONAL INTELLIGENCE';
-      case '/alerts': return 'ALERT COMMAND CENTER';
-      case '/time-machine': return 'TIME MACHINE';
-      default: return 'SYSTEM STANDBY';
-    }
-  };
+  const isMissionControl = location.pathname === '/mission-control' || location.pathname === '/';
 
   return (
     <motion.header
@@ -37,16 +26,16 @@ export default function SystemStatusBar() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="w-full flex justify-between items-center"
     >
-      {/* LEFT: Branding & Module Name */}
-      <div className="flex items-center gap-4 md:gap-6">
-        <div className="p-1.5 rounded-lg bg-black/40 border border-white/5 shadow-lg backdrop-blur-md shrink-0">
-          <FiShield className="text-brand-cyan text-sm animate-pulse" />
-        </div>
-        <div className="flex flex-col justify-center">
-          <h1 className="text-xs lg:text-sm font-bold tracking-[0.2em] uppercase text-white font-orbitron leading-none drop-shadow-md hidden sm:block max-w-[120px] lg:max-w-none truncate">
-            {getModuleTitle(location.pathname)}
-          </h1>
-        </div>
+      {/* LEFT: Show FactoryOS branding ONLY on Mission Control page */}
+      <div className="flex items-center gap-3">
+        {isMissionControl ? (
+          <Link to="/mission-control" className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900/80 border border-brand-cyan/30 shadow-[0_0_15px_rgba(34,211,238,0.15)] backdrop-blur-md shrink-0 hover:border-brand-cyan/60 transition-all">
+            <FiShield className="text-brand-cyan text-base animate-pulse" />
+            <span className="text-xs font-bold font-orbitron tracking-wider text-white">FACTORY<span className="text-brand-cyan">OS</span> <span className="text-slate-400 text-[10px] tracking-normal font-normal">v2.4.1</span></span>
+          </Link>
+        ) : (
+          <div className="w-8 h-8 pointer-events-none" />
+        )}
       </div>
 
       {/* CENTER: Floating Icon Dock */}
@@ -90,10 +79,17 @@ export default function SystemStatusBar() {
         })}
       </div>
 
-      {/* RIGHT: Time & Notifications */}
-      <div className="flex items-center gap-3 md:gap-4">
+      {/* RIGHT: Page Controls, Time & Notifications */}
+      <div className="flex items-center gap-3 md:gap-4 shrink-0">
+        {/* Page-Specific Badges / Controls (Placed directly beside time clock) */}
+        {extraRight && (
+          <div className="shrink-0 flex items-center">
+            {extraRight}
+          </div>
+        )}
+
         {/* Time */}
-        <div className="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full border border-white/5 hidden md:flex">
+        <div className="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full border border-white/5 hidden md:flex shrink-0">
           <FiClock className="text-slate-400" size={12} />
           <span className="font-mono text-xs tracking-widest text-slate-200 font-bold">{currentTime}</span>
         </div>

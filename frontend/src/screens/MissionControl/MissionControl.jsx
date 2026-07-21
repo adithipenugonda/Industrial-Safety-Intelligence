@@ -25,7 +25,7 @@ export default function MissionControl() {
       <SVGConnectionLayer />
 
       {/* Top Bar: System Status */}
-      <div className="absolute top-0 left-0 z-50 w-full pointer-events-none p-4">
+      <div className="fixed top-0 left-0 z-50 w-full pointer-events-none p-4">
         <div className="pointer-events-auto w-full">
           <SystemStatusBar />
         </div>
@@ -76,7 +76,7 @@ export default function MissionControl() {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 1.1 }}
-        className="absolute top-[40%] right-8 -translate-y-1/2 z-20 w-[340px] h-[450px]"
+        className="absolute top-[32%] right-8 -translate-y-1/2 z-20 w-[330px] h-[360px]"
       >
         <div className="h-full hover-scale group">
           <ThreatMatrixWidget />
@@ -88,7 +88,7 @@ export default function MissionControl() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.2 }}
-        className="absolute bottom-28 left-12 z-20"
+        className="absolute bottom-24 left-12 z-20"
       >
         <WeatherWidget />
       </motion.div>
@@ -98,9 +98,9 @@ export default function MissionControl() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.3 }}
-        className="absolute bottom-28 right-12 z-20 w-[400px]"
+        className="absolute bottom-16 right-8 z-20 w-[330px]"
       >
-        <div className="h-full hover-scale">
+        <div className="hover-scale">
           <AIAdvisorFeed />
         </div>
       </motion.div>
